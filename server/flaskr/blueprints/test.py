@@ -8,7 +8,7 @@ bp = Blueprint("test", __name__, url_prefix='/test')
 @bp.route("/wow", methods=(["GET", "POST"]))
 def testEnd():
     if request.method == "GET":
-        return send_file("../downloads/Documents.zip", as_attachment=True)
+        return send_file("./downloads/Documents.zip", as_attachment=True)
 
     if request.method == "POST":
         name = request.form["name"]

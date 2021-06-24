@@ -12,11 +12,11 @@ def create_app(test_config=None):
         SQLALCHEMY_DATABASE_URI=os.environ["DATABASE_URL"],
     )
 
-    from ..blueprints.test import bp
+    from .blueprints.test import bp
     
     app.register_blueprint(bp)
 
-    from ..database.models import db
+    from .database.models import db
     
     db.init_app(app)
     Migrate(app, db)
