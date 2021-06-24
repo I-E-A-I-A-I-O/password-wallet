@@ -9,7 +9,10 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+venv/
 /captures
 .externalNativeBuild
 .cxx
+.env
 local.properties
+__pycache__/
