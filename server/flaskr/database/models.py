@@ -12,12 +12,14 @@ class Users(db.Model):
     name = Column(type_=String())
     email = Column(type_=String(), unique=True)
     password = Column(type_=String())
+    key = Column(type_=String())
     passwords = relationship("Passwords", backref="users", lazy=True)
 
-    def __init__(self, name, email, password) -> None:
+    def __init__(self, name, email, password, key) -> None:
         self.name = name
         self.email = email
         self.password = password
+        self.key = key
 
     def __repr__(self) -> str:
         return "<name {}, email {}, id {}>".format(self.name, self.email, self.id)
