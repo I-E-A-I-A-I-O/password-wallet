@@ -1,19 +1,17 @@
 package com.example.passwordwallet.ui.register
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.afollestad.vvalidator.form
-import com.example.passwordwallet.R
 import com.example.passwordwallet.databinding.RegisterFragmentBinding
+import com.example.passwordwallet.requests.registerAccount
 import com.example.passwordwallet.requests.types.User
-import com.example.passwordwallet.secure.encrypt
 import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
@@ -50,12 +48,23 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
     private fun onSubmit() {
+        toggleLoading()
         val name = binding.registerNameInput.text.toString()
         val email = binding.registerEmailInput.text.toString()
         val password = binding.registerPasswordInput.text.toString()
         lifecycleScope.launch {
-            val encrypted = encrypt(password)
-            Log.d("TEST", encrypted[0])
+            val user = User(name, email, password)
+            registerAccount(user) { _, message ->
+                toggleLoading()
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
         }
+    }
+    private fun toggleLoading() {
+        binding.registerProgressBar.visibility = when(binding.registerProgressBar.visibility) {
+            View.GONE -> View.VISIBLE
+            else -> View.VISIBLE
+        }
+        binding.registerButton.isEnabled = !binding.registerButton.isEnabled
     }
 }

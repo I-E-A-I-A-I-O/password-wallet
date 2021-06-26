@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 from ..database.models import Users, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from ..utils.crypto import gen_random_key
@@ -17,6 +17,7 @@ def registerUsers():
         try:
             body = request.get_json()
         except:
+            current_app.logger.exception("Received request without JSON body")
             response_body = {
                 "message": "Bad body type"
             }
@@ -40,8 +41,10 @@ def registerUsers():
             response_body = {
                 "message": "Account created."
             }
+            current_app.logger.info("Account registered")
             return response_body, HTTPStatus.CREATED
         except:
+            current_app.logger.exception("Error inserting new account")
             response_body = {
                 "message": "Couldn't register the account. Try again later."
             }

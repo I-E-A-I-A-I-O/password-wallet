@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-fun registerAccount(user: User, onResponse: ((status: Int, reason: String) -> Unit)?) {
+fun registerAccount(user: User, onResponse: ((code: Int, message: String) -> Unit)?) {
     val call = apiService.registerAccount(user)
     call.enqueue(object: Callback<Message> {
         override fun onResponse(call: Call<Message>, response: Response<Message>) {
