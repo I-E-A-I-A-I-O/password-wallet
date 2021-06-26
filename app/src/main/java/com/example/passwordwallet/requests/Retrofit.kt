@@ -1,5 +1,6 @@
 package com.example.passwordwallet.requests
 
+import com.example.passwordwallet.requests.types.Login
 import com.example.passwordwallet.requests.types.Message
 import com.example.passwordwallet.requests.types.User
 import retrofit2.Call
@@ -18,6 +19,8 @@ val retrofit: Retrofit = Retrofit.Builder()
 interface Endpoints {
     @POST("users/")
     fun registerAccount(@Body user: User): Call<Message>
+    @POST("login/")
+    fun login(@Body login: Login): Call<Message>
 }
 
-val apiService = retrofit.create(Endpoints::class.java)
+val apiService: Endpoints = retrofit.create(Endpoints::class.java)

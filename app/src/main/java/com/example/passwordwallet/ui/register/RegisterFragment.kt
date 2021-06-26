@@ -50,7 +50,7 @@ class RegisterFragment : Fragment() {
     private fun onSubmit() {
         toggleLoading()
         val name = binding.registerNameInput.text.toString()
-        val email = binding.registerEmailInput.text.toString()
+        val email = binding.registerEmailInput.text.toString().lowercase()
         val password = binding.registerPasswordInput.text.toString()
         lifecycleScope.launch {
             val user = User(name, email, password)
@@ -63,7 +63,7 @@ class RegisterFragment : Fragment() {
     private fun toggleLoading() {
         binding.registerProgressBar.visibility = when(binding.registerProgressBar.visibility) {
             View.GONE -> View.VISIBLE
-            else -> View.VISIBLE
+            else -> View.GONE
         }
         binding.registerButton.isEnabled = !binding.registerButton.isEnabled
     }
