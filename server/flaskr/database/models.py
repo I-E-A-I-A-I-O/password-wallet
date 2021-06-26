@@ -39,7 +39,7 @@ class Passwords(db.Model):
     id = Column(type_=UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(type_=String())
     password = Column(type_=String())
-    user = Column("user", Integer, ForeignKey("users.id"), nullable=False)
+    user = Column("user", UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
     def __init__(self, name, password, user):
         self.name = name
