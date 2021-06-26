@@ -34,7 +34,11 @@ def login():
         same = check_password_hash(users.password, password)
         if (same):
             access_token = create_access_token(users.id)
-            return jsonify(message=access_token), HTTPStatus.CREATED
+            return jsonify({
+                "message": "OK",
+                "name": users.name,
+                "token": access_token
+            }), HTTPStatus.CREATED
         else:
             return jsonify(message="Incorrect password."), HTTPStatus.UNAUTHORIZED
 

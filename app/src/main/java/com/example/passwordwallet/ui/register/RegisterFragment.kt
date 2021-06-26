@@ -33,6 +33,7 @@ class RegisterFragment : Fragment() {
             useRealTimeValidation(disableSubmit = true)
             inputLayout(binding.registerEmailLayout) {
                 isEmail().description("Insert a valid email!")
+                isNotEmpty().description("Email is required.")
             }
             inputLayout(binding.registerNameLayout) {
                 isNotEmpty().description("Name is required.")
