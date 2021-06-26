@@ -9,7 +9,7 @@ def create_app(test_config=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config.from_mapping(
         SECRET_KEY=os.environ["SECRET_KEY"],
-        SQLALCHEMY_DATABASE_URI=os.environ["DATABASE_URL"],
+        SQLALCHEMY_DATABASE_URI=os.environ["DATABASE_URI"],
     )
 
     from .blueprints.users import bp
