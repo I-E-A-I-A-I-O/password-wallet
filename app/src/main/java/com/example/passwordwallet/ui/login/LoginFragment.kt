@@ -64,6 +64,7 @@ class LoginFragment : Fragment() {
                 accepted, message, data ->
                 if (!accepted) {
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    toggleLoading()
                 } else {
                     val db = AppDatabase.getInstance(requireContext())
                     val user = User(
