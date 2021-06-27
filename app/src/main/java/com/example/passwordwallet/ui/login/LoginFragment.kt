@@ -11,7 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.afollestad.vvalidator.form
-import com.example.passwordwallet.BottomNav
+import com.example.passwordwallet.BottomNavActivity
 import com.example.passwordwallet.R
 import com.example.passwordwallet.databinding.LoginFragmentBinding
 import com.example.passwordwallet.requests.login
@@ -77,7 +77,7 @@ class LoginFragment : Fragment() {
                     lifecycleScope.launch(Dispatchers.IO) {
                         db.userDao().insertUser(user)
                         lifecycleScope.launch {
-                            val intent = Intent(context, BottomNav::class.java).apply {
+                            val intent = Intent(context, BottomNavActivity::class.java).apply {
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             }
                             activity?.startActivity(intent)

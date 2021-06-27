@@ -21,7 +21,7 @@ class LauncherActivity : AppCompatActivity() {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
             } else {
-                intent = Intent(this@LauncherActivity, BottomNav::class.java).apply {
+                intent = Intent(this@LauncherActivity, BottomNavActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
             }

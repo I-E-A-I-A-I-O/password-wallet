@@ -11,7 +11,7 @@ import com.example.passwordwallet.room.dao.UserDao
 import com.example.passwordwallet.room.entities.Passwords
 import com.example.passwordwallet.room.entities.User
 
-@Database(entities = [User::class, Passwords::class], version = 1)
+@Database(entities = [User::class, Passwords::class], version = 2)
 @TypeConverters(UUIDConverter::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun userDao(): UserDao
