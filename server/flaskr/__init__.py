@@ -13,7 +13,8 @@ def create_app(test_config=None):
         SECRET_KEY=os.environ["SECRET_KEY"],
         SQLALCHEMY_DATABASE_URI=os.environ["DATABASE_URI"],
         JWT_SECRET_KEY=os.environ["JWT_SECRET_KEY"],
-        JWT_ACCESS_TOKEN_EXPIRES=ACCESS_EXPIRE
+        JWT_ACCESS_TOKEN_EXPIRES=ACCESS_EXPIRE,
+        JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     )
 
     from .utils.jwt import jwt

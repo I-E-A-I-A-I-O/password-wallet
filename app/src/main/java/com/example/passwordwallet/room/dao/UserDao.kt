@@ -12,11 +12,14 @@ interface UserDao {
     fun deleteUser(user: User)
 
     @Query("SELECT * FROM User")
-    fun getUser(): User
+    fun getUser(): List<User>
 
     @Query("DELETE FROM User")
     fun deleteUserTable()
 
     @Update
     fun updateUser(user: User)
+
+    @Query("UPDATE User SET access_token = :newToken WHERE access_token = :oldToken")
+    fun updateAccessToken(newToken: String, oldToken: String)
 }

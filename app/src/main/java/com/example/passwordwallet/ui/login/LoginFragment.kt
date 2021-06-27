@@ -19,6 +19,7 @@ import com.example.passwordwallet.requests.types.Login
 import com.example.passwordwallet.requests.types.OKLogin
 import com.example.passwordwallet.room.AppDatabase
 import com.example.passwordwallet.room.entities.User
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
@@ -70,13 +71,18 @@ class LoginFragment : Fragment() {
                     val user = User(
                         name = data?.name!!,
                         email = email,
-                        token = data.token!!
+                        token = data.token!!,
+                        refreshToken = data.refreshToken!!
                     )
-                    db.userDao().insertUser(user)
-                    val intent = Intent(context, BottomNav::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        db.userDao().insertUser(user)
+                        lifecycleScope.launch {
+                            val intent = Intent(context, BottomNav::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            }
+                            activity?.startActivity(intent)
+                        }
                     }
-                    activity?.startActivity(intent)
                 }
             }
         }

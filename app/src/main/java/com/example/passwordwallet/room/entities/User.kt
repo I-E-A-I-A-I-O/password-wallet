@@ -10,5 +10,6 @@ data class User(
     @PrimaryKey val id: UUID = UUID.randomUUID(),
     @ColumnInfo(name="name") val name: String,
     @ColumnInfo(name="email") val email: String,
-    @ColumnInfo(name="access_token") val token: String
+    @ColumnInfo(name="access_token") val token: String,
+    @ColumnInfo(name="refresh_token") val refreshToken: String
 )

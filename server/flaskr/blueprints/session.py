@@ -4,7 +4,12 @@ from ..database.models import JWTModel, Users, db
 from werkzeug.security import check_password_hash
 from ..utils.crypto import gen_random_key
 from http import HTTPStatus
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt
+from flask_jwt_extended import (
+    create_access_token, 
+    jwt_required, get_jwt, 
+    create_refresh_token,
+    get_jwt_identity
+    )
 
 session_bp = Blueprint("session", __name__, url_prefix="/session")
 
@@ -34,10 +39,12 @@ def login():
         same = check_password_hash(users.password, password)
         if (same):
             access_token = create_access_token(users.id)
+            refresh_token = create_refresh_token(users.id)
             return jsonify({
                 "message": "OK",
                 "name": users.name,
-                "token": access_token
+                "token": access_token,
+                "refresh_token": refresh_token
             }), HTTPStatus.CREATED
         else:
             return jsonify(message="Incorrect password."), HTTPStatus.UNAUTHORIZED
@@ -55,3 +62,17 @@ def logout():
     except:
         current_app.logger.exception("Error revoking jwt")
         return jsonify(message="Error ending session."), HTTPStatus.INTERNAL_SERVER_ERROR
+
+@session_bp.route("/token/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    token = create_access_token(identity)
+    return jsonify({
+        "token": token
+    }), HTTPStatus.CREATED
+
+@session_bp.route("/token/state", methods=["GET"])
+@jwt_required()
+def testToken():
+    return jsonify({"message": "OK"}), HTTPStatus.OK
