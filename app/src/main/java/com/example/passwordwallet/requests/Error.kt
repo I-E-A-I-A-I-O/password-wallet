@@ -1,6 +1,6 @@
 package com.example.passwordwallet.requests
 
-import com.example.passwordwallet.requests.types.Message
+import com.example.passwordwallet.requests.types.responses.Message
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Response

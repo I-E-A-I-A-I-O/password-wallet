@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.afollestad.vvalidator.form
 import com.example.passwordwallet.databinding.RegisterFragmentBinding
 import com.example.passwordwallet.requests.registerAccount
-import com.example.passwordwallet.requests.types.User
+import com.example.passwordwallet.requests.types.requests.User
 import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {

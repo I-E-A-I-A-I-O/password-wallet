@@ -15,8 +15,7 @@ import com.example.passwordwallet.BottomNavActivity
 import com.example.passwordwallet.R
 import com.example.passwordwallet.databinding.LoginFragmentBinding
 import com.example.passwordwallet.requests.login
-import com.example.passwordwallet.requests.types.Login
-import com.example.passwordwallet.requests.types.OKLogin
+import com.example.passwordwallet.requests.types.requests.Login
 import com.example.passwordwallet.room.AppDatabase
 import com.example.passwordwallet.room.entities.User
 import kotlinx.coroutines.Dispatchers

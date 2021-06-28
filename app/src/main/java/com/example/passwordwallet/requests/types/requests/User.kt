@@ -1,4 +1,4 @@
-package com.example.passwordwallet.requests.types
+package com.example.passwordwallet.requests.types.requests
 
 import com.google.gson.annotations.SerializedName
 

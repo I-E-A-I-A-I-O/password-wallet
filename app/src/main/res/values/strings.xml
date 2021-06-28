@@ -40,4 +40,7 @@
     <string name="a_z_caps">A-Z</string>
     <string name="_0_9">0-9</string>
     <string name="special_chars"><![CDATA[*$&]]></string>
+    <string name="description">Description</string>
+    <string name="account_password">Account password</string>
+    <string name="submit">Submit</string>
 </resources>

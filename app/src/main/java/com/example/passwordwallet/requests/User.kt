@@ -1,8 +1,13 @@
 package com.example.passwordwallet.requests
 
 import android.content.Context
-import androidx.lifecycle.LifecycleCoroutineScope
-import com.example.passwordwallet.requests.types.*
+import android.util.Log
+import com.example.passwordwallet.requests.types.RefreshToken
+import com.example.passwordwallet.requests.types.requests.Login
+import com.example.passwordwallet.requests.types.requests.User
+import com.example.passwordwallet.requests.types.responses.Message
+import com.example.passwordwallet.requests.types.responses.OKLogin
+import com.example.passwordwallet.requests.types.responses.TokenRefreshed
 import com.example.passwordwallet.room.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,10 +15,9 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.coroutines.CoroutineContext
 
 fun registerAccount(user: User, onResponse: ((code: Int, message: String) -> Unit)?) {
-    val call = api.getIntance().registerAccount(user)
+    val call = Api.getInstance().registerAccount(user)
     call.enqueue(object: Callback<Message> {
         override fun onResponse(call: Call<Message>, response: Response<Message>) {
             if (onResponse == null) {
@@ -37,7 +41,7 @@ fun registerAccount(user: User, onResponse: ((code: Int, message: String) -> Uni
 }
 
 fun login(login: Login, onResponse: ((accepted: Boolean, message: String, data: OKLogin?) -> Unit)?) {
-    val call = api.getIntance().login(login)
+    val call = Api.getInstance().login(login)
     call.enqueue(object : Callback<OKLogin> {
         override fun onResponse(call: Call<OKLogin>, response: Response<OKLogin>) {
             if (onResponse == null) {
@@ -60,68 +64,29 @@ fun login(login: Login, onResponse: ((accepted: Boolean, message: String, data: 
     })
 }
 
-private fun isTokenValid(accessToken: String, onResponse: (accepted: Boolean) -> Unit) {
-    val call = api.getIntance().isTokenValid("Bearer $accessToken")
-    call.enqueue(object: Callback<Message> {
-        override fun onResponse(call: Call<Message>, response: Response<Message>) {
-            onResponse(response.isSuccessful)
-        }
-
-        override fun onFailure(call: Call<Message>, t: Throwable) {
-            onResponse(false)
-        }
-    })
-}
-
-private fun checkForRefresh(
-    accessToken: String, refreshToken: String,
-    onResponse: (success: Boolean, newToken: String?) -> Unit
-) {
-    isTokenValid(accessToken) {
-        if (it) {
-            onResponse(true, null)
-        } else {
-            val call = api.getIntance().refreshToken("Bearer $refreshToken")
-            call.enqueue(object: Callback<TokenRefreshed> {
-                override fun onResponse(
-                    call: Call<TokenRefreshed>,
-                    response: Response<TokenRefreshed>
-                ) {
-                    if (response.isSuccessful) {
-                        onResponse(true, response.body()?.token)
-                    } else {
-                        onResponse(false, null)
-                    }
-                }
-
-                override fun onFailure(call: Call<TokenRefreshed>, t: Throwable) {
-                    onResponse(false, null)
-                }
-            })
-        }
+fun isTokenValid(accessToken: String): Boolean {
+    return try {
+        val call = Api.getInstance().isTokenValid("Bearer $accessToken")
+        val response = call.execute()
+        response.isSuccessful
+    } catch (e: Exception) {
+        Log.d("Network exception", e.stackTraceToString())
+        false
     }
 }
 
-fun validateToken(
-    accessToken: String,
-    refreshToken: String,
-    context: Context,
-    scope: CoroutineScope,
-    onResponse: (success: Boolean, newToken: String?) -> Unit
-    ) {
-    checkForRefresh(accessToken, refreshToken) {
-        success, newToken ->
-        if (!success) {
-            onResponse(success, null)
+fun refreshToken(refreshToken: String): RefreshToken {
+    return try {
+        val call = Api.getInstance().refreshToken("Bearer $refreshToken")
+        val response = call.execute()
+        if (response.isSuccessful) {
+            RefreshToken("OK", response.body()?.token, true)
         } else {
-            if (newToken != null) {
-                scope.launch(Dispatchers.IO) {
-                    AppDatabase.getInstance(context).userDao().updateAccessToken(newToken, accessToken)
-                    onResponse(true, newToken)
-                }
-            } else {
-                onResponse(true, null)
-            }
+            val errorBody = parseError(response as Response<Any>)
+            RefreshToken(errorBody.message, null, false)
         }
+    } catch (e: Exception) {
+        Log.d("Network exception", e.stackTraceToString())
+        RefreshToken("Couldn't connect to the server", null, false)
     }
 }

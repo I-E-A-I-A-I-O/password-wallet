@@ -32,4 +32,7 @@ interface PasswordsDao {
 
     @Update
     fun updatePasswordRecords(vararg passwords: Passwords)
+
+    @Query("UPDATE Passwords SET id = :newId WHERE id = :oldId")
+    fun updateId(newId: UUID, oldId: UUID)
 }
