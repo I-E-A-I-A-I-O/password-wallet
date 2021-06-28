@@ -56,7 +56,7 @@ class AddPasswordFragment : Fragment() {
             putString("password", password)
             putString("accPass", accountPass)
         }
-        val jobInfo = JobInfo.Builder(Random.nextInt(0, Int.MAX_VALUE),
+        val jobInfo = JobInfo.Builder((0..Int.MAX_VALUE).random(),
             ComponentName(requireContext(), SendPasswordToServer::class.java)).apply {
             setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
             setExtras(bundle)

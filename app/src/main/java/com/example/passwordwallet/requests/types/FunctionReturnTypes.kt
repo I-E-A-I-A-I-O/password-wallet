@@ -11,3 +11,8 @@ data class PasswordPosted(
     val id: String?,
     val success: Boolean
 )
+
+data class PasswordValid(
+    val message: String,
+    val valid: Boolean,
+)

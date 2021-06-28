@@ -9,11 +9,9 @@ from werkzeug.security import check_password_hash
 
 password_blueprint = Blueprint("passwords", __name__, url_prefix= "/passwords")
 
-@password_blueprint.route("/", methods=["POST", "GET"])
+@password_blueprint.route("/", methods=["POST"])
 @jwt_required()
 def get_post_password():
-    if request.method == "GET":
-        return jsonify(nada="nada"), HTTPStatus.NOT_IMPLEMENTED
     if request.method == "POST":
         token_identity = get_jwt_identity()
         body = None
@@ -56,3 +54,36 @@ def get_post_password():
             current_app.logger.exception(f"Exception trying to inster new password field for user {user.id} at {datetime.now(timezone.utc)}")
             return jsonify({"message": "Error saving the password."}), HTTPStatus.INTERNAL_SERVER_ERROR
 
+@password_blueprint.route("/list", methods=["POST"])
+@jwt_required()
+def list_user_passwords():
+    user_identity = get_jwt_identity()
+    body = None
+    
+    try:
+        body = request.get_json()
+    except:
+        current_app.logger.exception(f"Bad body type received in list passwords from user {user_identity} at {datetime.now(timezone.utc)}")
+        return jsonify({"message": "Bad body."}), HTTPStatus.BAD_REQUEST
+    
+    master_pass = body["password"]
+    user = db.session.query(Users).filter_by(id=user_identity).scalar()
+    same = check_password_hash(user.password, master_pass)
+
+    if not same:
+        return jsonify({"message": "Incorrect password"}), HTTPStatus.UNAUTHORIZED
+    
+    decrypted_key = decrypt(user.key, master_pass)
+    saved_passwords = db.session.query(Passwords).filter_by(user=user_identity).all()
+    decrypted_passwords = list()
+
+    for saved_password in saved_passwords:
+        decrypted_passwords.append(
+            {
+                "id": saved_password.id,
+                "description": saved_password.name,
+                "password": decrypt(saved_password.password, decrypted_key)
+            }
+        )
+    
+    return jsonify(decrypted_passwords), HTTPStatus.OK

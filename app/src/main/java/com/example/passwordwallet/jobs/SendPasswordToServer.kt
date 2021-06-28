@@ -22,6 +22,7 @@ import java.util.*
 
 class SendPasswordToServer: JobService() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
     override fun onStartJob(params: JobParameters?): Boolean {
         coroutineScope.launch {
             val database = AppDatabase.getInstance(applicationContext)
@@ -37,7 +38,7 @@ class SendPasswordToServer: JobService() {
                 } else {
                     Log.d("Token refresh error",
                         "Token refresh was unsuccessful and the job 'SendPasswordToServer' wasn't completed was aborted.")
-                    sendBroadcast("Couldn't connect to the server", true)
+                    sendBroadcast("Session expired.", true)
                 }
             }
             jobFinished(params, false)

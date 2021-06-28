@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.passwordwallet" >
+    package="com.example.passwordwallet">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,10 +11,23 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PasswordWallet" >
-        <service android:name=".jobs.SendPasswordToServer"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
-        <activity android:name=".LauncherActivity" >
+        android:theme="@style/Theme.PasswordWallet">
+        <activity android:name=".AskPasswordActivity" />
+
+        <service
+            android:name=".jobs.GetPasswordsFromServer"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".jobs.VerifyPassword"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".jobs.CheckInternetConnection"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".jobs.SendPasswordToServer"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity android:name=".LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".BottomNavActivity"/>
+        <activity android:name=".BottomNavActivity" />
     </application>
 
 </manifest>

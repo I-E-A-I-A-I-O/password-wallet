@@ -2,9 +2,11 @@ package com.example.passwordwallet.requests
 
 import android.content.Context
 import android.util.Log
+import com.example.passwordwallet.requests.types.PasswordValid
 import com.example.passwordwallet.requests.types.RefreshToken
 import com.example.passwordwallet.requests.types.requests.Login
 import com.example.passwordwallet.requests.types.requests.User
+import com.example.passwordwallet.requests.types.requests.UserPassword
 import com.example.passwordwallet.requests.types.responses.Message
 import com.example.passwordwallet.requests.types.responses.OKLogin
 import com.example.passwordwallet.requests.types.responses.TokenRefreshed
@@ -88,5 +90,24 @@ fun refreshToken(refreshToken: String): RefreshToken {
     } catch (e: Exception) {
         Log.d("Network exception", e.stackTraceToString())
         RefreshToken("Couldn't connect to the server", null, false)
+    }
+}
+
+fun isPasswordValid(password: String, accessToken: String): PasswordValid {
+    return try {
+        val call = Api.getInstance().isPasswordValid("Bearer $accessToken", UserPassword(password))
+        val response = call.execute()
+        val message: String = if (response.isSuccessful) {
+            response.body()?.message!!
+        } else {
+            parseError(response as Response<Any>).message
+        }
+        PasswordValid(
+            message,
+            response.isSuccessful
+        )
+    } catch (e: Exception) {
+        Log.d("Exception", e.stackTraceToString())
+        PasswordValid("Network error", false)
     }
 }

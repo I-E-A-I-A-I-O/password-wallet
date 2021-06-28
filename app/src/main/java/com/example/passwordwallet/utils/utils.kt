@@ -19,3 +19,10 @@ fun logout(context: Context, scope: CoroutineScope) {
     }
     context.startActivity(intent)
 }
+
+object SessionValues {
+    @Volatile
+    var password: String? = null
+    @Volatile
+    var isConnected: Boolean = true
+}
