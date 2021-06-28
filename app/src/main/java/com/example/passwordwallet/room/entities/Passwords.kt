@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity
 data class Passwords(
-    @PrimaryKey val id: UUID,
+    @PrimaryKey val id: UUID = UUID.randomUUID(),
     @ColumnInfo(name="description") val description: String,
     @ColumnInfo(name="password") val password: String
 )

@@ -23,9 +23,11 @@ def create_app(test_config=None):
 
     from .blueprints.users import users_bp
     from .blueprints.session import session_bp
+    from .blueprints.passwords import password_blueprint
     
     app.register_blueprint(users_bp)
     app.register_blueprint(session_bp)
+    app.register_blueprint(password_blueprint)
 
     from .database.models import db
     

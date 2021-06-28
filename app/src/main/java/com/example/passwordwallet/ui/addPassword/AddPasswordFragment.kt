@@ -11,10 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.afollestad.vvalidator.form
 import com.example.passwordwallet.databinding.FragmentAddPasswordBinding
 import com.example.passwordwallet.jobs.SendPasswordToServer
+import com.example.passwordwallet.utils.logout
 import kotlin.random.Random
 
 class AddPasswordFragment : Fragment() {
@@ -79,6 +81,12 @@ class AddPasswordFragment : Fragment() {
     private val submitReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             toggleLoading()
+            val message = intent?.extras?.getString("message")
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            val logout = intent?.extras?.getBoolean("logout")
+            if (logout == true) {
+                logout(requireContext(), lifecycleScope)
+            }
         }
     }
 }

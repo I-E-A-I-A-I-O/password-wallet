@@ -8,7 +8,7 @@ import java.lang.Exception
 
 fun insertPassword(token: String, password: PostPassword): PasswordPosted {
     return try {
-        val call = Api.getInstance().savePassword(token, password)
+        val call = Api.getInstance().savePassword("Bearer $token", password)
         val response = call.execute()
         if (response.isSuccessful) {
             PasswordPosted(response.body()?.message!!, response.body()?.id, true)

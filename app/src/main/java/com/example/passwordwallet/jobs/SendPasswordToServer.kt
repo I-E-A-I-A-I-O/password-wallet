@@ -15,8 +15,10 @@ import com.example.passwordwallet.requests.isTokenValid
 import com.example.passwordwallet.requests.refreshToken
 import com.example.passwordwallet.requests.types.requests.PostPassword
 import com.example.passwordwallet.room.AppDatabase
+import com.example.passwordwallet.room.entities.Passwords
 import com.example.passwordwallet.ui.addPassword.AddPasswordFragment
 import kotlinx.coroutines.*
+import java.util.*
 
 class SendPasswordToServer: JobService() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -26,17 +28,16 @@ class SendPasswordToServer: JobService() {
             val user = database.userDao().getUser()[0]
             val isTokenValid = isTokenValid(user.token)
             if (isTokenValid) {
-                //sendPassword(user.token, params?.extras!!)
-                sendBroadcast()
+                sendPassword(user.token, params?.extras!!)
             } else {
                 val refreshedToken = refreshToken(user.refreshToken)
                 if (refreshedToken.success) {
                     database.userDao().updateAccessToken(refreshedToken.token!!, user.token)
-                    //sendPassword(refreshedToken.token, params?.extras!!)
-                    sendBroadcast()
+                    sendPassword(refreshedToken.token, params?.extras!!)
                 } else {
                     Log.d("Token refresh error",
                         "Token refresh was unsuccessful and the job 'SendPasswordToServer' wasn't completed was aborted.")
+                    sendBroadcast("Couldn't connect to the server", true)
                 }
             }
             jobFinished(params, false)
@@ -45,15 +46,28 @@ class SendPasswordToServer: JobService() {
     }
 
     private fun sendPassword(token: String, extras: PersistableBundle) {
+        val database = AppDatabase.getInstance(applicationContext)
         val description = extras.getString("description")!!
         val password = extras.getString("password")!!
         val accountPassword = extras.getString("accPass")!!
+        val localPassword = Passwords(
+            description = description,
+            password = description
+        )
+        database.passwordsDao().insertPassword(localPassword)
         val postPassword = PostPassword(description, password, accountPassword)
         val response = insertPassword(token, postPassword)
+        if (response.success) {
+            database.passwordsDao().updateId(UUID.fromString(response.id), localPassword.id)
+        }
+        sendBroadcast(response.message, false)
     }
 
-    private fun sendBroadcast() {
-        val intent = Intent("PASSWORD-POSTED")
+    private fun sendBroadcast(message: String, shouldLogout: Boolean) {
+        val intent = Intent("PASSWORD-POSTED").apply {
+            putExtra("message", message)
+            putExtra("logout", shouldLogout)
+        }
         LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
     }
 
