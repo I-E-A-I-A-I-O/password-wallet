@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import uuid
 from flask import request, Blueprint, current_app
 from flask.json import jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -27,7 +28,7 @@ def get_post_password():
         description = body["description"]
         password = body["password"]
         master_password = body["master_pass"]
-        user = db.session.query(Users).filter_by(id=token_identity).scalar()
+        user = db.session.query(Users).filter_by(id=uuid.UUID(token_identity)).scalar()
 
         if user is None:
             current_app.logger.error(f"User not found from identity {token_identity} in post password method at {datetime.now(timezone.utc)}")
@@ -45,7 +46,7 @@ def get_post_password():
         password_obj = Passwords(
             description,
             encrypted_password,
-            user
+            user.id
         )
 
         try:

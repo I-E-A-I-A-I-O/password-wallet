@@ -8,7 +8,6 @@ db = SQLAlchemy()
 
 class Users(db.Model):
     __tablename__ = 'users'
-    
     id = Column(type_=UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(type_=String())
     email = Column(type_=String(), unique=True)
@@ -23,7 +22,7 @@ class Users(db.Model):
         self.key = key
 
     def __repr__(self) -> str:
-        return "<name {}, email {}, id {}>".format(self.name, self.email, self.id)
+        return f"<name {self.name}, email {self.email}, id {self.id}>"
 
     def serialize(self):
         return {
@@ -47,7 +46,7 @@ class Passwords(db.Model):
         self.user = user
 
     def __repr__(self) -> str:
-        return "<name {}, id {}>".format(self.name, self.id)
+        return f"<name {self.name}, id {self.id}>"
 
     def serialize(self):
         return {
@@ -68,7 +67,7 @@ class JWTModel(db.Model):
         self.created_at = created_at
 
     def __repr__(self) -> str:
-        return "<jti {}, id{}, created_at {}".format(self.jti, self.id, self.created_at)
+        return f"<jti {self.jti}, id{self.id}, created_at {self.created_at}"
 
     def serialize(self):
         return {
