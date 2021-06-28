@@ -5,7 +5,6 @@ import android.app.job.JobScheduler
 import android.content.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.content.getSystemService
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.passwordwallet.jobs.CheckInternetConnection
@@ -30,9 +29,7 @@ class LauncherActivity : AppCompatActivity() {
             } else {
                 val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
                 val jobInfo = JobInfo.Builder((0..Int.MAX_VALUE).random(),
-                ComponentName(this@LauncherActivity, CheckInternetConnection::class.java)).apply {
-                    setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                }
+                ComponentName(this@LauncherActivity, CheckInternetConnection::class.java))
                 jobScheduler.schedule(jobInfo.build())
             }
         }

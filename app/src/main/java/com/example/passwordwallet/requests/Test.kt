@@ -1,7 +1,14 @@
 package com.example.passwordwallet.requests
 
+import android.util.Log
+
 fun testConnection(): Boolean {
-    val call = Api.getTestInstance().testConnection()
-    val response = call.execute()
-    return response.isSuccessful
+    return try {
+        val call = Api.getTestInstance().testConnection()
+        val response = call.execute()
+        response.isSuccessful
+    } catch (e: Exception) {
+        Log.d("Err", e.stackTraceToString())
+        false
+    }
 }
