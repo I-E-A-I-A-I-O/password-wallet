@@ -88,7 +88,7 @@ def list_user_passwords():
     
     return jsonify(decrypted_passwords), HTTPStatus.OK
 
-@password_blueprint.route("/<str:password_id>", methods=["DELETE"])
+@password_blueprint.route("/<string:password_id>", methods=["DELETE"])
 @jwt_required()
 def deletePassword(password_id: str):
     identity = get_jwt_identity()
