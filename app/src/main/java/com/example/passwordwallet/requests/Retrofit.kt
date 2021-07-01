@@ -1,9 +1,6 @@
 package com.example.passwordwallet.requests
 
-import com.example.passwordwallet.requests.types.requests.Login
-import com.example.passwordwallet.requests.types.requests.PostPassword
-import com.example.passwordwallet.requests.types.requests.User
-import com.example.passwordwallet.requests.types.requests.UserPassword
+import com.example.passwordwallet.requests.types.requests.*
 import com.example.passwordwallet.requests.types.responses.Message
 import com.example.passwordwallet.requests.types.responses.OKLogin
 import com.example.passwordwallet.requests.types.responses.PostedPassword
@@ -11,10 +8,7 @@ import com.example.passwordwallet.requests.types.responses.TokenRefreshed
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 const val BASE_URL = "https://password-wallet-app.herokuapp.com/"
 const val TEST_URL = "https://clients3.google.com"
@@ -47,6 +41,10 @@ interface Endpoints {
     fun savePassword(@Header("Authorization") accessToken: String, @Body password: PostPassword): Call<PostedPassword>
     @POST("users/password")
     fun isPasswordValid(@Header("Authorization") accessToken: String, @Body password: UserPassword): Call<Message>
+    @POST("passwords/list")
+    fun getPasswords(@Header("Authorization") accessToken: String, @Body password: UserPassword): Call<List<PasswordDescription>>
+    @DELETE("passwords/{id}")
+    fun deletePassword(@Header("Authorization") accessToken: String, @Path("id") id: String): Call<Message>
 }
 
 object Api {

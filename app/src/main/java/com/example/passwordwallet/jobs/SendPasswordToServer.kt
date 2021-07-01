@@ -53,7 +53,7 @@ class SendPasswordToServer: JobService() {
         val accountPassword = extras.getString("accPass")!!
         val localPassword = Passwords(
             description = description,
-            password = description
+            password = password
         )
         database.passwordsDao().insertPassword(localPassword)
         val postPassword = PostPassword(description, password, accountPassword)

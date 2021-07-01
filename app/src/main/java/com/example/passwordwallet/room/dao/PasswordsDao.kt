@@ -35,4 +35,7 @@ interface PasswordsDao {
 
     @Query("UPDATE Passwords SET id = :newId WHERE id = :oldId")
     fun updateId(newId: UUID, oldId: UUID)
+
+    @Query("DELETE FROM Passwords WHERE id = :id")
+    fun deleteById(id: UUID)
 }

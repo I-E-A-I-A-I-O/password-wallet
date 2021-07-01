@@ -87,3 +87,18 @@ def list_user_passwords():
         )
     
     return jsonify(decrypted_passwords), HTTPStatus.OK
+
+@password_blueprint.route("/<str:password_id>", methods=["DELETE"])
+@jwt_required()
+def deletePassword(password_id: str):
+    identity = get_jwt_identity()
+    result = db.session.query(Passwords).filter_by(id=password_id).first()
+    
+    if result is None:
+        return jsonify({"message": "Not found."}), HTTPStatus.NOT_FOUND
+    
+    if result.user != identity:
+        return jsonify({"message": "Not your password. e.e"}), HTTPStatus.UNAUTHORIZED
+
+    db.session.query(Passwords).filter(Passwords.id == password_id).delete()
+    return jsonify({"message": "Password deleted."}), HTTPStatus.OK

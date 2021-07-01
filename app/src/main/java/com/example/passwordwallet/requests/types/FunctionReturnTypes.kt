@@ -1,5 +1,7 @@
 package com.example.passwordwallet.requests.types
 
+import com.example.passwordwallet.requests.types.requests.PasswordDescription
+
 data class RefreshToken(
     val message: String,
     val token: String?,
@@ -15,4 +17,10 @@ data class PasswordPosted(
 data class PasswordValid(
     val message: String,
     val valid: Boolean,
+)
+
+data class GetPasswords(
+    val message: String,
+    val success: Boolean,
+    val content: List<PasswordDescription>
 )

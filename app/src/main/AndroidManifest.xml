@@ -21,6 +21,9 @@
             android:name=".jobs.VerifyPassword"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
+            android:name=".jobs.DeletePassword"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
             android:name=".jobs.CheckInternetConnection"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
