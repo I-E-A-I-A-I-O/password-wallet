@@ -94,7 +94,7 @@ def deletePassword(password_id: str):
     identity = get_jwt_identity()
     result = db.session.query(Passwords).filter_by(id=password_id).first()
     
-    current_app.logger.info(result.serialize())
+    current_app.logger.exception(result.serialize())
 
     if result is None:
         return jsonify({"message": "Not found."}), HTTPStatus.NOT_FOUND
