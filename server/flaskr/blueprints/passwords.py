@@ -93,13 +93,11 @@ def list_user_passwords():
 def deletePassword(password_id: str):
     identity = get_jwt_identity()
     result = db.session.query(Passwords).filter_by(id=password_id).first()
-    
-    current_app.logger.exception(result.serialize())
 
     if result is None:
         return jsonify({"message": "Not found."}), HTTPStatus.NOT_FOUND
     
-    if result.user is not identity:
+    if str(result.user) is not identity:
         return jsonify({"message": "Not your password. e.e"}), HTTPStatus.UNAUTHORIZED
 
     db.session.query(Passwords).filter(Passwords.id == password_id).delete()
