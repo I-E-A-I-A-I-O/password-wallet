@@ -102,6 +102,11 @@ def deletePassword(password_id: str):
         current_app.logger.error(f"User {identity} attempted to delete a foreign password with id {password_id} belonging to the user {str(result.user)}")
         return jsonify({"message": "Not your password. e.e"}), HTTPStatus.UNAUTHORIZED
 
-    db.session.query(Passwords).filter(Passwords.id == password_id).delete()
-    current_app.logger.info(f"User {identity} deleted password {password_id}")
-    return jsonify({"message": "Password deleted."}), HTTPStatus.OK
+    try:
+        db.session.query(Passwords).filter(Passwords.id == password_id).delete()
+        db.session.commit()
+        current_app.logger.info(f"User {identity} deleted password {password_id}")
+        return jsonify({"message": "Password deleted."}), HTTPStatus.OK
+    except:
+        current_app.logger.exception(f"Error deleting password {password_id} from user {identity}")
+        return jsonify({"message": "Error deleting password."}), HTTPStatus.INTERNAL_SERVER_ERROR
