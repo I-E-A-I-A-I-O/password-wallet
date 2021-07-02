@@ -94,16 +94,14 @@ def deletePassword(password_id: str):
     identity = get_jwt_identity()
     result = db.session.query(Passwords).filter_by(id=password_id).first()
 
-    current_app.logger.exception(identity)
-    current_app.logger.exception(result.user)
-    current_app.logger.exception(str(result.user))
-    current_app.logger.exception(f"{str(result.user) == str(identity)}")
-
     if result is None:
+        current_app.logger.error(f"User {identity} attempted to delete not existend password with id {password_id}")
         return jsonify({"message": "Not found."}), HTTPStatus.NOT_FOUND
     
-    if result.user is not identity:
+    if str(result.user) != str(identity):
+        current_app.logger.error(f"User {identity} attempted to delete a foreign password with id {password_id} belonging to the user {str(result.user)}")
         return jsonify({"message": "Not your password. e.e"}), HTTPStatus.UNAUTHORIZED
 
     db.session.query(Passwords).filter(Passwords.id == password_id).delete()
+    current_app.logger.info(f"User {identity} deleted password {password_id}")
     return jsonify({"message": "Password deleted."}), HTTPStatus.OK
