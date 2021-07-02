@@ -51,11 +51,11 @@ class GetPasswordsFromServer: JobService() {
                     Passwords(UUID.fromString(pass.id), pass.description, pass.password))
             }
             if(currentPasswords.isNotEmpty()) {
-                val unregistered = listOf<Passwords>()
+                var unregistered = listOf<Passwords>()
                 for (pass in fromServer) {
                     val size = currentPasswords.filter { it.id == pass.id }.size
                     if (size == 0) {
-                        unregistered.plus(pass)
+                        unregistered = unregistered.plus(pass)
                     }
                 }
                 database.passwordsDao().insertPasswords(*unregistered.toTypedArray())
