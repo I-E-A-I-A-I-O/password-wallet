@@ -50,14 +50,18 @@ class GetPasswordsFromServer: JobService() {
                 fromServer = fromServer.plus(
                     Passwords(UUID.fromString(pass.id), pass.description, pass.password))
             }
-            val unregistered = listOf<Passwords>()
-            for (pass in fromServer) {
-                val size = currentPasswords.filter { it.id == pass.id }.size
-                if (size == 0) {
-                    unregistered.plus(pass)
+            if(currentPasswords.isNotEmpty()) {
+                val unregistered = listOf<Passwords>()
+                for (pass in fromServer) {
+                    val size = currentPasswords.filter { it.id == pass.id }.size
+                    if (size == 0) {
+                        unregistered.plus(pass)
+                    }
                 }
+                database.passwordsDao().insertPasswords(*unregistered.toTypedArray())
+            } else {
+                database.passwordsDao().insertPasswords(*fromServer.toTypedArray())
             }
-            database.passwordsDao().insertPasswords(*unregistered.toTypedArray())
             sendBroadcast("Completed.", false)
         } else {
             sendBroadcast(response.message, false)

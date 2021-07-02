@@ -94,6 +94,8 @@ def deletePassword(password_id: str):
     identity = get_jwt_identity()
     result = db.session.query(Passwords).filter_by(id=password_id).first()
     
+    current_app.logger.info(f"Are they the same? {result.user == identity}")
+
     if result is None:
         return jsonify({"message": "Not found."}), HTTPStatus.NOT_FOUND
     
