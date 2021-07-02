@@ -97,7 +97,8 @@ def deletePassword(password_id: str):
     current_app.logger.exception(identity)
     current_app.logger.exception(result.user)
     current_app.logger.exception(str(result.user))
-    current_app.logger.exception(f"{str(result.user)}" is f"{str(identity)}")
+    current_app.logger.exception(f"{str(result.user) == str(identity)}")
+
     if result is None:
         return jsonify({"message": "Not found."}), HTTPStatus.NOT_FOUND
     
